@@ -1,13 +1,15 @@
-from sqlalchemy import Integer, Column, String, ForeignKey
+from sqlalchemy import Integer, Column, String, DateTime, ForeignKey, Table, Text
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
 
-
-class UserAchievements(Base):
-    __tablename__ = 'user_achievements'
-    user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
-    achievement_id = Column(Integer, ForeignKey("achievements.id"), primary_key=True)
+user_achievements = Table(
+    "user_achievements",
+    Base.metadata,
+    Column("user_id", Integer, ForeignKey("users.id"), primary_key=True),
+    Column("achievement_id", Integer, ForeignKey("achievements.id"), primary_key=True),
+    Column("created_at", DateTime)
+)
 
 
 class User(Base):
@@ -15,15 +17,16 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     username = Column(String, unique=True)
     language_id = Column(Integer, ForeignKey("languages.id"))
-    achievements = relationship("Achievements", secondary=UserAchievements, back_populates="users")
+    achievements = relationship("Achievement", secondary=user_achievements, back_populates="users")
 
 
 class Achievement(Base):
-    _tablename__ = 'achievements'
+    __tablename__ = 'achievements'
     id = Column(Integer, primary_key=True)
     name = Column(String, unique=True)
-    users = relationship("User", secondary=UserAchievements, back_populates="achievements")
-    descriptions = relationship("AchievementDescription", back_populates="description")
+    scores = Column(Integer)
+    users = relationship("User", secondary=user_achievements, back_populates="achievements")
+    descriptions = relationship("AchievementDescription", back_populates="achievement")
 
 
 class Language(Base):
@@ -38,5 +41,5 @@ class AchievementDescription(Base):
     id = Column(Integer, primary_key=True)
     achievement_id = Column(Integer, ForeignKey("achievements.id"))
     language_id = Column(Integer, ForeignKey("languages.id"))
-    description = Column(String(1024))
+    description = Column(Text(1024))
     achievement = relationship("Achievement", back_populates="descriptions")

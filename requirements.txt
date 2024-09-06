@@ -1,5 +1,10 @@
-flask
-sqlalchemy
+flask~=3.0.3
+sqlalchemy~=2.0.34
 flask_restful
-marshmallow
+flask_marshmallow
+flask_apispec
+flask_swagger_ui
+marshmallow_sqlalchemy
+flask_injector
 psycopg2
+injector~=0.22.0
