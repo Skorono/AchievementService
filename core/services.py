@@ -1,16 +1,48 @@
 import abc
-from typing import TypeVar, List
+from typing import TypeVar, List, Optional, Generic, Callable
 
+import injector
+
+from core.models import User, Achievement
 from dal.repositories import EntityRepository
 
 T = TypeVar('T')
 
 
-class Service(abc.ABC):
+class Service(abc.ABC, Generic[T]):
     _repository: EntityRepository[T]
 
+    @injector.inject
     def __init__(self, repository: EntityRepository[T]):
         self._repository = repository
 
-    def get(self, id: int) -> List[T]:
+    def get(self, id: int) -> Optional[T]:
         return self._repository.get(id)
+
+    def get_all(self) -> List[T]:
+        return self._repository.get_all()
+
+    def get_filtered(self, predicate: Callable[[T], bool]) -> List[T]:
+        entities = self._repository.get_all()
+        return list(filter(predicate, entities))
+
+    def add(self, entity: T) -> None:
+        self._repository.add(entity)
+
+    def update(self, entity: T) -> None:
+        self._repository.update(entity)
+
+    def delete(self, id: int) -> None:
+        self._repository.delete(id)
+
+
+class UserService(Service[User]):
+    @injector.inject
+    def __init__(self, repository: EntityRepository[User]):
+        super().__init__(repository)
+
+
+class AchievementService(Service[Achievement]):
+    @injector.inject
+    def __init__(self, repository: EntityRepository[Achievement]):
+        super().__init__(repository)
