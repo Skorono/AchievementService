@@ -8,3 +8,5 @@ marshmallow_sqlalchemy
 flask_injector
 psycopg2
 injector~=0.22.0
+apispec~=6.6.1
+marshmallow~=3.22.0
