@@ -1,10 +1,7 @@
 import abc
-from typing import TypeVar, Optional, Generic, List
+from typing import List, Optional, Generic, TypeVar
 
-import injector
 from sqlalchemy.orm import Session
-
-from core.models import User, Achievement
 
 T = TypeVar('T')
 
@@ -24,6 +21,10 @@ class EntityRepository(abc.ABC, Generic[T]):
         self._session.add(item)
         self.save()
 
+    def add_range(self, items: List[T]):
+        self._session.add_all(items)
+        self.save()
+
     def delete(self, id: int) -> None:
         entity = self.get(id)
         if entity:
@@ -37,15 +38,5 @@ class EntityRepository(abc.ABC, Generic[T]):
     def save(self) -> None:
         self._session.commit()
 
-
-class UserRepository(EntityRepository[User]):
-    @injector.inject
-    def __init__(self, session: Session, model=User):
-        super().__init__(session, model)
-
-
-class AchievementRepository(EntityRepository[Achievement]):
-
-    @injector.inject
-    def __init__(self, session: Session, model=Achievement):
-        super().__init__(session, model)
+    def __del__(self):
+        self._session.close()
