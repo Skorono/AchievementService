@@ -1,0 +1,64 @@
+openapi: 3.0.0
+info:
+  title: Achievements Service API
+  version: 1.0.0
+  description: API for managing users and their achievements.
+
+paths:
+  api/user:
+    get:
+      tags:
+        - User
+      summary: Retrieve user details
+      responses:
+        '200':
+          description: User details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+
+    post:
+      tags:
+        - User
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewUser'
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        username:
+          type: string
+          example: "john_doe"
+        email:
+          type: string
+          example: "john@example.com"
+
+    NewUser:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "new_user"
+        email:
+          type: string
+          example: "new_user@example.com"

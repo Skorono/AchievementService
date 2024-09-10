@@ -1,6 +1,8 @@
 import abc
+import logging
 from typing import List, Optional, Generic, TypeVar
 
+from sqlalchemy.exc import DatabaseError
 from sqlalchemy.orm import Session
 
 T = TypeVar('T')
@@ -36,7 +38,11 @@ class EntityRepository(abc.ABC, Generic[T]):
         self.save()
 
     def save(self) -> None:
-        self._session.commit()
+        try:
+            self._session.commit()
+        except DatabaseError as e:
+            self._session.rollback()
+            logging.error(f'Error occurred while processing transaction: {e}')
 
     def __del__(self):
         self._session.close()

@@ -7,6 +7,7 @@ from core.models import Achievement, User
 
 
 class DtoTransformer:
+    """Преобразует модели базы данных в dto"""
     @staticmethod
     def achievement_to_dto(achievement: Achievement, language: LanguageCode) -> AchievementDetailsDTO:
         achievement_dto: AchievementDetailsDTO = None
@@ -36,9 +37,9 @@ class DtoTransformer:
         user_dto = UserSummaryDTO(
             id=user.id,
             username=user.username,
-            language=LanguageCode[user.language.name],
+            language=LanguageCode[user.language.code],
             achievements=DtoTransformer.achievements_to_dto(user.achievements,
-                                                            language=LanguageCode[user.language.name])
+                                                            language=LanguageCode[user.language.code])
         )
 
         return user_dto

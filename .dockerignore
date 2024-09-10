@@ -1,0 +1,6 @@
+**/Dockerfile*
+**/nginx.conf*
+**/docker-compose.yaml*
+**/README.md*
+/src
+/.idea

@@ -6,6 +6,9 @@ services:
       dockerfile: api/Dockerfile
     environment:
       - FLASK_APP=api/app.py
+    depends_on:
+      - db
+      - nginx
     networks:
       - default_network
 
@@ -23,6 +26,7 @@ services:
 
   nginx:
     image: nginx:latest
+    restart: always
     ports:
       - "8080:80"
     volumes:
