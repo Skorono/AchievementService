@@ -39,7 +39,7 @@ class Achievement(Base):
     __tablename__ = 'achievements'
     id = Column(Integer, primary_key=True)
     scores = Column(Integer, nullable=False)
-    user_achievements = relationship("UserAchievements", back_populates="achievement")
+    user_achievements = relationship("UserAchievements", back_populates="achievement", cascade="all, delete-orphan")
     descriptions = relationship("AchievementDescription", back_populates="achievement", cascade="all, delete-orphan")
 
     @property
@@ -50,6 +50,7 @@ class Achievement(Base):
         users = [relation.user for relation in achievement_relations]
 
         return users
+
 
 class Language(Base):
     __tablename__ = 'languages'

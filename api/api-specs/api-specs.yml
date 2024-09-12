@@ -5,7 +5,7 @@ info:
   description: API for managing users and their achievements.
 
 paths:
-  api/user:
+  /api/user:
     get:
       tags:
         - User
@@ -29,36 +29,163 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NewUser'
+              $ref: '#/components/schemas/UserSummary'
       responses:
         '201':
           description: User created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/UserSummary'
+    delete:
+      responses:
+      tags:
+          - User
+  
+  /api/users:
+    get:
+      responses:
+      tags:
+        - User
+  
+  /api/user/achievements:
+    get:
+      responses:
+      tags:
+        - User
+
+  /api/achievement:
+    get:
+      responses:
+      tags:
+        - Achievement
+    
+    post:
+      responses:
+      tags:
+        - Achievement
+    
+    put:
+      tags:
+        - Achievement
+      responses:
+    delete:
+      tags:
+        - Achievement
+      responses:
+        
+  /api/achievements:
+    get:
+      responses:
+      tags:
+        - Achievement
+  
+  /api/user/statistic/score_leader:
+    get:
+      responses:
+      tags:
+        - Statistic
+  
+  /api/user/statistic/achievement_leader:
+    get:
+      responses:
+      tags:
+        - Statistic
+  
+  /api/user/statistic/min_score_diff:
+    get:
+      responses:
+      tags:
+        - Statistic
 
 components:
   schemas:
-    User:
+    UserSummary:
+      type: object
+      required:
+        - id
+        - username
+        - language
+      properties:
+        id:
+          type: integer
+          description: Идентификатор пользователя
+        username:
+          type: string
+          description: Имя пользователя
+        language:
+          type: string
+          description: Язык пользователя
+        achievements:
+          type: array
+          items:
+            $ref: '#/components/schemas/AchievementDetails'
+          description: Список достижений пользователя
+      
+    AchievementDescription:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Название достижения
+        text:
+          type: string
+          description: Описание достижения
+        language_id:
+          type: integer
+          description: Идентификатор языка
+    
+    Achievement:
       type: object
       properties:
         id:
           type: integer
-          example: 1
-        username:
-          type: string
-          example: "john_doe"
-        email:
-          type: string
-          example: "john@example.com"
+          default: 0
+          description: Идентификатор достижения
+        scores:
+          type: integer
+          required: true
+          description: Баллы за достижение
+        descriptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/AchievementDescription'
+          description: Список описаний достижения на разных языках
 
-    NewUser:
+    User:
       type: object
+      required:
+        - username
+        - language_id
       properties:
         username:
           type: string
-          example: "new_user"
-        email:
+          description: Имя пользователя
+        language_id:
+          type: integer
+          description: Идентификатор языка пользователя
+    
+    AchievementDetails:
+      type: object
+      required:
+        - id
+        - name
+        - scores
+        - text
+      properties:
+        id:
+          type: integer
+          description: Идентификатор достижения
+        name:
           type: string
-          example: "new_user@example.com"
+          description: Название достижения
+        scores:
+          type: integer
+          description: Баллы за достижение
+        text:
+          type: string
+          description: Описание достижения
+        issued_at:
+          type: string
+          format: date-time
+          description: Дата выдачи достижения (опционально)

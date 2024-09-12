@@ -5,7 +5,8 @@ from sqlalchemy.orm import sessionmaker, Session
 
 from core.models import User, Achievement
 from core.services.achievement_service import AchievementService, IAchievementService
-from core.services.user_service import IUserService, UserService
+from core.services.user_service import IUserService, UserService, IUserStatisticService, UserStatisticService, \
+    UserAchievementsService, IUserAchievementsService
 from dal.context import Base
 from dal.repositories.achievement_repositories import AchievementRepository
 from dal.repositories.repository import EntityRepository
@@ -39,4 +40,6 @@ class InjectorConfig:
         binder.bind(EntityRepository[Achievement], to=AchievementRepository, scope=request)
 
         binder.bind(IUserService, to=UserService, scope=request)
+        binder.bind(IUserStatisticService, to=UserStatisticService, scope=request)
+        binder.bind(IUserAchievementsService, to=UserAchievementsService, scope=request)
         binder.bind(IAchievementService, to=AchievementService, scope=request)

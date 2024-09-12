@@ -64,7 +64,6 @@ class AchievementAPI(Resource):
         """Обновляет информации о достижении, включая описания"""
         schema = AchievementSchema()
         parser = reqparse.RequestParser()
-        parser.add_argument('id', type=int, required=True, location='args')
         parser.add_argument('achievement', type=str, help="Achievement data required!")
 
         args = parser.parse_args()
@@ -77,7 +76,6 @@ class AchievementAPI(Resource):
             logging.error("Error occurred while processing the request: achievement data is uncorrected")
             return {'error': 'achievement data is uncorrected'}, HTTPStatus.BAD_REQUEST
 
-        validated_data["id"] = int(args['id'])
 
         self._service.update(validated_data)
         logging.info("Successfully updated achievement")
@@ -93,3 +91,13 @@ class AchievementAPI(Resource):
 
         self._service.delete(int(args['id']))
         return HTTPStatus.OK
+
+
+class AchievementsAPI(Resource):
+    @inject
+    def __init__(self, service: IAchievementService):
+        self._service = service
+
+    @swag_from('../api-specs/api-specs.yml')
+    def get(self) -> tuple[Response, HTTPStatus]:
+        return self._service.get_all(), HTTPStatus.OK

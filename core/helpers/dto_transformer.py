@@ -43,3 +43,12 @@ class DtoTransformer:
         )
 
         return user_dto
+    
+    @staticmethod
+    def users_to_dto(users: List[User]) -> List[UserSummaryDTO]:
+        user_dtos = list()
+        for user in users:
+            user_dtos.append(DtoTransformer.user_to_dto(user))
+        
+        return user_dtos
+    

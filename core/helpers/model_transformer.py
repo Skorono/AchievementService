@@ -1,4 +1,4 @@
-from core.dtos.achievement_dto import AchievementSchema
+from core.dtos.achievement_dto import AchievementSchema, AchievementDescriptionSchema
 from core.dtos.user_dto import UserSchema, UserSummarySchema
 from core.models import Achievement, User, AchievementDescription
 
@@ -15,18 +15,22 @@ class ModelTransformer:
         pass
 
     @staticmethod
+    def achievement_description_to_model(description_dto: AchievementDescriptionSchema) -> AchievementDescription:
+        description = AchievementDescription()
+        description.text = description_dto["text"]
+        description.language_id = description_dto["language_id"]
+        description.name = description_dto["name"]
+
+        return description
+
+    @staticmethod
     def achievement_to_model(achievement_dto: AchievementSchema) -> Achievement:
         achievement = Achievement()
         descriptions = list()
         for description_dto in achievement_dto["descriptions"]:
-            description = AchievementDescription()
-            description.text = description_dto["text"]
-            description.language_id = description_dto["language_id"]
-            description.name = description_dto["name"]
+            descriptions.append(ModelTransformer.achievement_description_to_model(description_dto))
 
-            descriptions.append(description)
-
-        achievement.scores = achievement["scores"]
+        achievement.scores = achievement_dto["scores"]
         achievement.descriptions = descriptions
 
         return achievement
